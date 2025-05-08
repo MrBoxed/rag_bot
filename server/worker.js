@@ -25,7 +25,7 @@ const worker = new Worker(
 
         console.log(docs);
 
-        const client = new QdrantClient({ url: process.env.QDRANT_URL || "http://localhost:6333" });
+        // const client = new QdrantClient({ url: process.env.QDRANT_URL || "http://localhost:6333" });
 
         // Embedding Model : COHERE
         const embeddings = new CohereEmbeddings({
@@ -34,11 +34,10 @@ const worker = new Worker(
         });
 
 
-        const vectorStore = await QdrantVectorStore.fromDocuments(
-            docs,
+        const vectorStore = await QdrantVectorStore.fromExistingCollection(
             embeddings,
             {
-                client,
+                url: process.env.QDRANT_URL || 'http://localhost:6333',
                 collectionName: "lawMaster",
             });
 
