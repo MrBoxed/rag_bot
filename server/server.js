@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { json } from 'express'
 import cors from 'cors'
 import multer from 'multer';
 import { Queue } from 'bullmq';
@@ -20,7 +20,9 @@ config();
 
 const PORT = process.env.SERVER_PORT || 8000;
 const app = express();
-app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:8000'] }));
+app.use(cors());
+// origin: ['http://localhost:3000', 'http://localhost:8000'] 
+// }));
 
 const queue = new Queue('file-upload-queue', {
     connection: {
@@ -49,7 +51,10 @@ app.get('/', (req, res) => {
 
 app.get('/chat', async (req, res) => {
 
-    const userQuery = "What are my rights during an arrest?";
+    // const userQuery = "What are my rights during an arrest?";
+    const userQuery = req.query.message;
+
+    // return res.json({ query: userQuery, message: (`this is message for ${userQuery.message}`) });
 
     try {
 
