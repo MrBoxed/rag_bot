@@ -5,16 +5,13 @@ import { Queue } from 'bullmq';
 import { QdrantVectorStore } from '@langchain/qdrant';
 import { config } from 'dotenv';
 import { ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-import { GoogleGenAI } from "@google/genai";
+
 import { CohereEmbeddings } from "@langchain/cohere"
-import { AttributeInfo } from "langchain/chains/query_constructor";
-import { SelfQueryRetriever } from "langchain/retrievers/self_query";
-import { QdrantTranslator } from "@langchain/community/structured_query/qdrant";
+
 import { OpenAI } from 'openai';
 import { ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate } from '@langchain/core/prompts';
 import { COLLECTION_NAME, HUMAN_PROMPT, SYSTEM_PROMPT } from './config/constants.js';
-import { RetrievalQAChain } from "langchain/chains"
-import { createRetrievalChain } from "langchain/chains/retrieval";
+
 import { RunnableSequence } from '@langchain/core/runnables';
 config();
 
@@ -73,10 +70,10 @@ app.get('/chat', async (req, res) => {
         //    apiKey: process.env.GOOGLE_API_KEY,  
         //})
 
-        const embeddings = new CohereEmbeddings({
-            apiKey: process.env.COHERE_API_KEY,
-            model: "embed-english-v3.0",
-        });
+        // const embeddings = new CohereEmbeddings({
+        //     apiKey: process.env.COHERE_API_KEY,
+        //     model: "embed-english-v3.0",
+        // });
 
         // Creating the vector store
         const qdrantVectorStore = await QdrantVectorStore.fromExistingCollection(
@@ -120,26 +117,26 @@ app.get('/chat', async (req, res) => {
         // :::: END GOOGLE GEMINI ::::
 
 
-        // // Embedding Model : COHERE
-        // const embeddings = new CohereEmbeddings({
-        //     apiKey: process.env.COHERE_API_KEY,
-        //     model: "embed-english-v3.0",
-        // });
-        // console.log("embedding");
+        // Embedding Model : COHERE
+        const embeddings = new CohereEmbeddings({
+            apiKey: process.env.COHERE_API_KEY,
+            model: "embed-english-v3.0",
+        });
+        console.log("embedding");
 
 
-        // const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
-        //     url: process.env.QDRANT_URL,
-        //     collectionName: "lawMaster",
-        // })
-        // console.log("vector store");
+        const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
+            url: process.env.QDRANT_URL,
+            collectionName: "lawMaster",
+        })
+        console.log("vector store");
 
-        // const ret = vectorStore.asRetriever({
-        //     k: 2,
-        // });
+        const ret = vectorStore.asRetriever({
+            k: 2,
+        });
 
-        // const result = await ret.invoke(userQuery);
-        // console.log(result);
+        const result = await ret.invoke(userQuery);
+        console.log(result);
 
         // const geminiLLm = new ChatGoogleGenerativeAI({
         //     apiKey: process.env.GOOGLE_API_KEY,
@@ -170,14 +167,14 @@ app.get('/chat', async (req, res) => {
         //     },
         // });
 
-        // const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-        // const chatResponse = await client.chat.completions.create({
-        //     model: "gpt-4.1",
-        //     messages: [
-        //         { role: "system", content: SYSTEM_PROMPT },
-        //         { role: "user", content: userQuery }
-        //     ]
-        // })
+        const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+        const chatResponse = await client.chat.completions.create({
+            model: "gpt-4.1",
+            messages: [
+                { role: "system", content: SYSTEM_PROMPT },
+                { role: "user", content: userQuery }
+            ]
+        })
 
         // return res.json({
         //     message: chatResponse,

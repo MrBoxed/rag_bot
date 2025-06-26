@@ -18,6 +18,8 @@
     "@langchain/google-genai": "^0.2.6",
     "@langchain/openai": "^0.5.10",
     "@langchain/qdrant": "^0.1.2",
+    "@qdrant/qdrant-js": "^1.14.1",
+    "@valkey/valkey-glide": "^2.0.1",
     "bullmq": "^5.52.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -25,7 +27,8 @@
     "langchain": "^0.3.24",
     "multer": "^1.4.5-lts.2",
     "openai": "^4.97.0",
-    "pdf-parse": "^1.1.1"
+    "pdf-parse": "^1.1.1",
+    "valkey": "^0.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
